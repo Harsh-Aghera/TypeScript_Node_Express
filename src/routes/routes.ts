@@ -35,6 +35,10 @@ router.delete("/:isbn", (req: Request, res: Response): void => {
   const isbn: number = +req.params.isbn;
   if (books[isbn] != null) {
     delete books[isbn];
+    var filtered = books.filter(function (el:string) {
+      return el != null;
+    });
+    books=filtered
     res.send("Book " + isbn + " deleted successfully");
   } else {
     res.send("ISBN don't exist");
