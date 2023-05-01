@@ -1,21 +1,27 @@
 {
-  "name": "final_ts_express",
+  "name": "joi_type_exp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+    "build": "tsc",
+    "start": "nodemon --exec  ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^18.16.2",
-    "ts-node-dev": "^2.0.0",
+    "@types/node": "^18.16.3",
+    "nodemon": "^2.0.22",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "@types/express-session": "^1.17.7",
+    "@types/jsonwebtoken": "^9.0.2",
+    "express": "^4.18.2",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "ts-node": "^10.9.1"
   }
 }
