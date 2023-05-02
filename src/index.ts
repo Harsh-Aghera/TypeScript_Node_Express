@@ -1,4 +1,4 @@
-import express, { Express} from "express";
+import express, {Express} from "express";
 import { router } from './routes/routes'
 import {middleware} from './controller/middleware'
 const PORT: number = 5000;
