@@ -1,10 +1,14 @@
-import express, {Express} from "express";
-import { router } from './routes/routes'
-import {middleware} from './controller/middleware'
+
+import express, {Express, Request, Response, NextFunction} from "express";
+import { users } from './users.routes'
+import {middleware} from './users.controller'
 const PORT: number = 5000;
 const app: Express = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(middleware);
-app.use('/books',router)
+app.use('/users',users);
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.send("check URL please")
+})
 app.listen(PORT, () => console.log("Server is running"));
