@@ -1,12 +1,26 @@
 import express, { Request, Response, Router } from "express";
-import { validateSchema, updateUser, createUser } from "./users.middleware";
+import { validateSchema} from "./users.middleware";
 import { Schema } from "./users.schema";
 import axios from "axios";
 const users: Router = express.Router();
 
 users.put("/:isbn", validateSchema(Schema), updateUser);
 users.post("/", validateSchema(Schema), createUser);
+async function updateUser(req: Request, res: Response) {
+  try {
+    res.status(200).send("Data Updated..");
+  } catch (err:any) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
+async function createUser(req: Request, res: Response){
+  try {
+    res.status(200).send("User added....");
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
 users.get("/", async (req: Request, res: Response) => {
   try {
     const api_response = await axios({
