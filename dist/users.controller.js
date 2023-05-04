@@ -1,34 +1,82 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.middleware = void 0;
-const joi_1 = __importDefault(require("joi"));
-const middleware = function (req, res, next) {
-    const Schema = joi_1.default.object({
-        id: joi_1.default.number().min(1).required(),
-        name: joi_1.default.string()
-            .required()
-            .pattern(/^[a-zA-Z0-9, ]/)
-            .max(30),
-        username: joi_1.default.string()
-            .pattern(/^[a-zA-Z0-9, ]/)
-            .max(30),
-        email: joi_1.default.string()
-            .email(),
-        address: joi_1.default.object().allow(''),
-        phone: joi_1.default.string().length(10).pattern(/^[0-9]+$/),
-        website: joi_1.default.string().allow(''),
-        company: joi_1.default.object().allow('')
-    });
-    if (req.method === "POST" || req.method === "PUT") {
-        const { error, value } = Schema.validate(req.body, {
-            abortEarly: false,
+exports.users = void 0;
+const express_1 = __importDefault(require("express"));
+const axios_1 = __importDefault(require("axios"));
+const users = express_1.default.Router();
+exports.users = users;
+users.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const api_response = yield (0, axios_1.default)({
+            url: "https://jsonplaceholder.typicode.com/users",
+            method: "get",
         });
-        if (error) {
-            res.send(error.details);
-        }
+        res.status(200).json(api_response.data);
     }
-};
-exports.middleware = middleware;
+    catch (err) {
+        res.status(500).json({ message: err });
+    }
+}));
+users.get("/:isbn", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const isbn = +req.params.isbn;
+        const api_response = yield (0, axios_1.default)({
+            url: "https://jsonplaceholder.typicode.com/users/" + isbn,
+            method: "get",
+        });
+        res.status(200).json(api_response.data);
+    }
+    catch (err) {
+        res.status(500).json({ message: err });
+    }
+}));
+users.put("/:isbn", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const isbn = +req.params.isbn;
+        let api_response = yield (0, axios_1.default)({
+            url: "https://jsonplaceholder.typicode.com/users/" + isbn,
+            method: "put",
+        });
+        res.status(200).json(api_response.data);
+    }
+    catch (err) {
+        res.status(500).json({ message: err });
+    }
+}));
+users.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let api_response = yield (0, axios_1.default)({
+            url: "https://jsonplaceholder.typicode.com/users/",
+            method: "post",
+        });
+        res.status(200).json(api_response.data);
+    }
+    catch (err) {
+        res.status(500).json({ message: err });
+    }
+}));
+users.delete("/:isbn", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const isbn = +req.params.isbn;
+        const api_response = yield (0, axios_1.default)({
+            url: "https://jsonplaceholder.typicode.com/users/" + isbn,
+            method: "delete",
+        });
+        res.status(200).json(api_response.data);
+    }
+    catch (err) {
+        res.status(500).json({ message: err });
+    }
+}));

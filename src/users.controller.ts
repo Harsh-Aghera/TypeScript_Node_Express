@@ -1,38 +1,48 @@
-import { Request, Response, NextFunction } from "express";
-import Joi from "joi";
+import express, { Request, Response, Router } from "express";
+import { validateSchema, updateUser, createUser } from "./users.middleware";
+import { Schema } from "./users.schema";
+import axios from "axios";
+const users: Router = express.Router();
 
-const middleware = function (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
-  const Schema = Joi.object({
-    id: Joi.number().min(1).required(),
-    name: Joi.string()
-      .required()
-      .pattern(/^[a-zA-Z0-9, ]/)
-      .max(30),
-    username: Joi.string()
-      .pattern(/^[a-zA-Z0-9, ]/)
-      .max(30),
-    email: Joi.string()
-      .email(),
-    address: Joi.object().allow(''),
-    phone: Joi.string().length(10).pattern(/^[0-9]+$/),
-    website : Joi.string().allow(''),
-    company: Joi.object().allow('')
-  });
-  if (req.method === "POST" || req.method === "PUT") {
-    const { error, value } = Schema.validate(req.body, {
-      abortEarly: false,
+users.put("/:isbn", validateSchema(Schema), updateUser);
+users.post("/", validateSchema(Schema), createUser);
+
+users.get("/", async (req: Request, res: Response) => {
+  try {
+    const api_response = await axios({
+      url: "https://jsonplaceholder.typicode.com/users",
+      method: "get",
     });
-    if (error) {
-      res.send(error.details);
-    }
+    res.status(200).json(api_response.data);
+  } catch (err) {
+    res.status(500).json({ message: err });
   }
-  if(req.method==='GET' || req.method==='DELETE'){
-    next();
-  }
-};
+});
 
-export { middleware };
+users.get("/:isbn", async (req: Request, res: Response) => {
+  try {
+    const isbn: number = +req.params.isbn;
+    const api_response = await axios({
+      url: "https://jsonplaceholder.typicode.com/users/" + isbn,
+      method: "get",
+    });
+    res.status(200).json(api_response.data);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+users.delete("/:isbn", async (req: Request, res: Response) => {
+  try {
+    const isbn: number = +req.params.isbn;
+    const api_response = await axios({
+      url: "https://jsonplaceholder.typicode.com/users/" + isbn,
+      method: "delete",
+    });
+    res.status(200).json(api_response.data);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+export { users };
